@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "WIRLouH+/Wg=",
+  "success": true,
+  "projectFilePath": "/home/cam/projects/dotnet/coding-tracker/coding-tracker/coding-tracker.csproj",
+  "expectedPackageFiles": [
+    "/home/cam/.nuget/packages/dapper/2.1.35/dapper.2.1.35.nupkg.sha512",
+    "/home/cam/.nuget/packages/spectre.console/0.49.1/spectre.console.0.49.1.nupkg.sha512",
+    "/home/cam/.nuget/packages/spectre.console.cli/0.49.1/spectre.console.cli.0.49.1.nupkg.sha512"
+  ],
+  "logs": []
+}
