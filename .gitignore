@@ -1,2 +1,5 @@
 coding-tracker/bin/
 coding-tracker/obj/
+.vscode/
+coding-tracker.sln
+
