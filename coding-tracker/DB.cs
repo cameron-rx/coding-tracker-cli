@@ -3,10 +3,11 @@ using Microsoft.Data.Sqlite;
 
 public class Database
 {
-    private string ConnectionString = "Data Source=Sessions.db;";
+    private string ConnectionString;
 
-    public Database()
+    public Database(string path)
     {
+        this.ConnectionString = path;
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
