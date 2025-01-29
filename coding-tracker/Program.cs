@@ -4,10 +4,16 @@ using System.Collections.Specialized;
 string? path;
 path = ConfigurationManager.AppSettings.Get("dbPath");
 
+/*
+Expected date format hh:mm dd/MM/yyyy
+*/
 if (path != null) 
 {
     Database db = new Database(path);
-    ConsoleInteraction.Welcome();
+    //var res = db.AddSession("12:45 19/02/2002", "15:45 19/02/2002");
+    //Console.WriteLine(res);
+    var dbEntries = db.GetAllSessions();
+    //ConsoleInteraction.Welcome();
 }
 else 
 {
