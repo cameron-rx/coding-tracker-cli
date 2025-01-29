@@ -19,6 +19,7 @@ public class Database
 
     public bool AddSession(string startTime, string endTime)
     {
+        // @value in sql statements allows for parameterised queries to prevent sql attacks
         string sql = "INSERT INTO coding_sessions (StartDate, EndDate) VALUES (@startDate, @endDate)";
         using (var connection = new SqliteConnection(ConnectionString))
         {
@@ -34,9 +35,23 @@ public class Database
         }
     }
 
-    public bool DeleteSession(int Id)
+    public bool DeleteSession(int id)
     {
-        return true;
+        string sql = "DELETE FROM coding_sessions WHERE Id=@Id";
+
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            var response = connection.Execute(sql,new {Id = id});
+
+            if (response > 0)
+            {
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
+        }
     }
 
     public List<CodingSession> GetAllSessions()
@@ -47,11 +62,6 @@ public class Database
         using (var connection = new SQLiteConnection(ConnectionString))
         {
             sessions = connection.Query<CodingSession>(sql).ToList();
-        }
-
-        foreach(CodingSession session in sessions)
-        {
-            Console.WriteLine($"Session ID: {session.Id} Duration: {session.CalculateDuration()}");
         }
 
         return sessions;
