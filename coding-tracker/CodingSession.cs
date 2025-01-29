@@ -1,16 +1,21 @@
+using System.Globalization;
+
 public class CodingSession 
 {
-    private int Id;
-    private DateTime Start;
-    private DateTime End;
-    private TimeSpan Duration;
+    public int Id {get; set;}
+    public DateTime StartDate {get; set;}
+    public DateTime EndDate {get; set;}
 
-    public CodingSession(int id, DateTime start, DateTime end)
+    public CodingSession(int id, string startDate, string endDate)
     {
-        Id = id;
-        Start = start;
-        End = end;
-        Duration = end - start;
+        this.Id = id;
+        this.StartDate = DateTime.ParseExact(startDate,"hh:mm dd/MM/yyyy", new CultureInfo("en-US"));
+        this.EndDate = DateTime.ParseExact(endDate,"hh:mm dd/MM/yyyy", new CultureInfo("en-us"));
+    }
+
+    public TimeSpan CalculateDuration()
+    {
+        return EndDate - StartDate;
     }
 
 }
