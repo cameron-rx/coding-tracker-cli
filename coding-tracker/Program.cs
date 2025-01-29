@@ -4,13 +4,10 @@ using System.Collections.Specialized;
 string? path;
 path = ConfigurationManager.AppSettings.Get("dbPath");
 
-/*
-Expected date format hh:mm dd/MM/yyyy
-*/
 if (path != null) 
 {
     Database db = new Database(path);
-    ConsoleInteraction.Welcome();
+    ConsoleInteraction.WelcomeScreen();
 }
 else 
 {
