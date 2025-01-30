@@ -1,48 +1,92 @@
+using System.Text.RegularExpressions;
 using Spectre.Console;
 
 // Handles all console output 
-public static class ConsoleInteraction
+public class ConsoleInteraction
 {
-    public static void WelcomeScreen()
+    private Database db;
+    public ConsoleInteraction(Database db)
     {
-        AnsiConsole.Clear();
-        var choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-            .Title("[bold black on white]Welcome to coding session tracker[/]")
-            .PageSize(10)
-            .AddChoices(new[] {
+        this.db = db;
+    }
+    public void WelcomeScreen()
+    {
+        while (true)
+        {
+            AnsiConsole.Clear();
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("[bold black on white]Coding Session Tracker[/]")
+                .PageSize(10)
+                .AddChoices(new[] {
             "Add Session", "View Sessions", "Delete Session",
             "Exit"
-        }));
+            }));
 
-        switch (choice)
-        {
-            case "Add Session":
-            AddSessionScreen();
-            break;
-            case "View Sessions":
-            ViewSessionsScreen();
-            break;
-            case "Delete Session":
-            DeleteSessionScreen();
-            break;
-            case "Exit":
-            Environment.Exit(0);
-            break;
+            switch (choice)
+            {
+                case "Add Session":
+                    AddSessionScreen();
+                    break;
+                case "View Sessions":
+                    ViewSessionsScreen();
+                    break;
+                case "Delete Session":
+                    DeleteSessionScreen();
+                    break;
+                case "Exit":
+                    Environment.Exit(0);
+                    break;
+            }
         }
     }
 
-    private static void AddSessionScreen() 
+    private void AddSessionScreen() 
+    {
+        string regexPattern = @"^\d{2}:\d{2}\s\d{2}/\d{2}/\d{4}$";
+        AnsiConsole.MarkupLine("[bold]Date and time entries must be in format [yellow]'00:00 01/01/2000'[/][/]");
+
+        string startDate = "";
+        bool validStartDate = false;
+        while (!validStartDate)
+        {
+            startDate = AnsiConsole.Ask<string>("Enter the time and date of when the session started: ");
+            validStartDate = Regex.IsMatch(startDate,regexPattern);
+            if (!validStartDate) {
+                AnsiConsole.MarkupLine("[bold red]Answer not in valid format try again.[/]");
+            }
+        }
+
+        string endDate = "";
+        bool validEndDate = false;
+        while (!validEndDate)
+        {
+            endDate = AnsiConsole.Ask<string>("Enter the time and date of when the session finished");
+            validEndDate = Regex.IsMatch(endDate,regexPattern);
+            if (!validEndDate) {
+                AnsiConsole.MarkupLine("[bold red]Answer not in valid format try again.[/]");
+            }
+        }
+
+        bool dbStatus = this.db.AddSession(startDate, endDate);
+
+        if (dbStatus)
+        {
+            AnsiConsole.MarkupLine("[bold green]Success![/] Session added to database.");
+        }
+        else 
+        {
+            AnsiConsole.MarkupLine("[bold red]Fail![/] Error adding session to database.");
+        }
+
+    }
+
+    private void DeleteSessionScreen() 
     {
 
     }
 
-    private static void DeleteSessionScreen() 
-    {
-
-    }
-
-    private static void ViewSessionsScreen()
+    private void ViewSessionsScreen()
     {
 
     }

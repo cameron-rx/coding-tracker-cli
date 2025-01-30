@@ -7,7 +7,8 @@ path = ConfigurationManager.AppSettings.Get("dbPath");
 if (path != null) 
 {
     Database db = new Database(path);
-    ConsoleInteraction.WelcomeScreen();
+    ConsoleInteraction console = new ConsoleInteraction(db);
+    console.WelcomeScreen();
 }
 else 
 {
