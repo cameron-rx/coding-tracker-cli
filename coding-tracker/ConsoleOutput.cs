@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Spectre.Console;
 
@@ -46,6 +48,8 @@ public class ConsoleInteraction
         string regexPattern = @"^\d{2}:\d{2}\s\d{2}/\d{2}/\d{4}$";
         AnsiConsole.MarkupLine("[bold]Date and time entries must be in format [yellow]'00:00 01/01/2000'[/][/]");
 
+
+        // TODO: Create method to reduce code repetition here
         string startDate = "";
         bool validStartDate = false;
         while (!validStartDate)
@@ -68,17 +72,34 @@ public class ConsoleInteraction
             }
         }
 
-        bool dbStatus = this.db.AddSession(startDate, endDate);
+        /*
+            TODO: VALIDATION TO MAKE SURE END DATE IS AFTER START DATE
+        */
 
-        if (dbStatus)
+        DateTime startDateTime = DateTime.ParseExact(startDate,"HH:mm d/MM/yyyy", new CultureInfo("en-US"));
+        DateTime endDateTime = DateTime.ParseExact(endDate,"HH:mm d/MM/yyyy", new CultureInfo("en-US"));
+        bool validDates = DateTime.Compare(startDateTime, endDateTime) < 0 ? true : false;
+
+        if (validDates)
         {
-            AnsiConsole.MarkupLine("[bold green]Success![/] Session added to database.");
+
+            bool dbStatus = this.db.AddSession(startDate, endDate);
+
+            if (dbStatus)
+            {
+                AnsiConsole.MarkupLine("\n[bold green]Success![/] Session added to database.");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("\n[bold red]Fail![/] Error adding session to database.");
+            }
         }
-        else 
+        else
         {
-            AnsiConsole.MarkupLine("[bold red]Fail![/] Error adding session to database.");
+            AnsiConsole.MarkupLine("\n[bold red]ERROR[/] Start date/time does not come before end date/time");
         }
 
+        Console.Read();
     }
 
     private void DeleteSessionScreen() 
