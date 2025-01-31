@@ -17,14 +17,23 @@ public class ConsoleInteraction
         while (true)
         {
             AnsiConsole.Clear();
-            var choice = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                .Title("[bold black on white]Coding Session Tracker[/]")
-                .PageSize(10)
-                .AddChoices(new[] {
-            "Add Session", "View Sessions", "Delete Session",
+            var title = new Markup("[bold]Coding Session Tracker[/]");
+            var panel = new Panel(title);
+            //var paddedTitle = new Padder(panel);
+
+            AnsiConsole.Write(panel);
+
+
+            var prompt = new SelectionPrompt<string>()
+            .PageSize(10)
+            .AddChoices(new[] {
+            "Add Session", 
+            "View Sessions", 
+            "Delete Session",
             "Exit"
-            }));
+            });
+
+            var choice = AnsiConsole.Prompt(prompt);
 
             switch (choice)
             {
@@ -38,6 +47,7 @@ public class ConsoleInteraction
                     DeleteSessionScreen();
                     break;
                 case "Exit":
+                    AnsiConsole.Clear();
                     Environment.Exit(0);
                     break;
             }
@@ -88,16 +98,16 @@ public class ConsoleInteraction
 
             if (dbStatus)
             {
-                AnsiConsole.MarkupLine("\n[bold green]Success![/] Session added to database.");
+                AnsiConsole.MarkupLine("[bold green]Success![/] Session added to database.");
             }
             else
             {
-                AnsiConsole.MarkupLine("\n[bold red]Fail![/] Error adding session to database.");
+                AnsiConsole.MarkupLine("[bold red]Fail![/] Error adding session to database.");
             }
         }
         else
         {
-            AnsiConsole.MarkupLine("\nt[bold red]ERROR[/] Start date/time does not come before end date/time");
+            AnsiConsole.MarkupLine("[bold red]ERROR[/] Start date/time does not come before end date/time");
         }
 
         Console.Read();
@@ -124,13 +134,12 @@ public class ConsoleInteraction
 
     private void ViewSessionsScreen()
     {
-        AnsiConsole.Clear();
         // Id start end duration
         var table = new Table();
-        table.AddColumn("Id");
-        table.AddColumn("Start");
-        table.AddColumn("End");
-        table.AddColumn("Duration");
+        table.AddColumn("[bold]Id[/]");
+        table.AddColumn("[bold]Start[/]");
+        table.AddColumn("[bold]End[/]");
+        table.AddColumn("[bold]Duration[/]");
         table.Title = new TableTitle("[bold]List of all coding sessions[/]");
 
         List<CodingSession> sessions = db.GetAllSessions();
