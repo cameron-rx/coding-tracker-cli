@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO.Pipelines;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Spectre.Console;
@@ -73,7 +74,7 @@ public class ConsoleInteraction
         }
 
         /*
-            TODO: VALIDATION TO MAKE SURE END DATE IS AFTER START DATE
+            TODO: Abstract away into method
         */
 
         DateTime startDateTime = DateTime.ParseExact(startDate,"HH:mm d/MM/yyyy", new CultureInfo("en-US"));
@@ -104,7 +105,21 @@ public class ConsoleInteraction
 
     private void DeleteSessionScreen() 
     {
+        // Get id user wants to delete
+        // run delete crud operation
+        // tell user if option was corret
+        int id = AnsiConsole.Prompt(new TextPrompt<int>("Enter id of session you would like to delete: "));
+        bool result = db.DeleteSession(id);
+        if (result)
+        {
+            AnsiConsole.MarkupLine("[bold green]Success![/] Session deleted from history");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[bold red]ERROR[/] Could not find session with that id.");
 
+        }
+        Console.Read();
     }
 
     private void ViewSessionsScreen()
