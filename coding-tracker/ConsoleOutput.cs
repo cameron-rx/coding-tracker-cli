@@ -56,32 +56,12 @@ public class ConsoleInteraction
 
     private void AddSessionScreen() 
     {
-        string regexPattern = @"^\d{2}:\d{2}\s\d{2}/\d{2}/\d{4}$";
         AnsiConsole.MarkupLine("[bold]Date and time entries must be in format [yellow]'00:00 01/01/2000'[/][/]");
 
 
-        // TODO: Create method to reduce code repetition here
-        string startDate = "";
-        bool validStartDate = false;
-        while (!validStartDate)
-        {
-            startDate = AnsiConsole.Ask<string>("Enter the time and date of when the session started: ");
-            validStartDate = Regex.IsMatch(startDate,regexPattern);
-            if (!validStartDate) {
-                AnsiConsole.MarkupLine("[bold red]Answer not in valid format try again.[/]");
-            }
-        }
+        string startDate = UserInput.DateInput("Enter the time and date of when the session started");
+        string endDate = UserInput.DateInput("Enter the time and date of when the session finished");
 
-        string endDate = "";
-        bool validEndDate = false;
-        while (!validEndDate)
-        {
-            endDate = AnsiConsole.Ask<string>("Enter the time and date of when the session finished");
-            validEndDate = Regex.IsMatch(endDate,regexPattern);
-            if (!validEndDate) {
-                AnsiConsole.MarkupLine("[bold red]Answer not in valid format try again.[/]");
-            }
-        }
 
         /*
             TODO: Abstract away into method
