@@ -2,6 +2,7 @@ using System.Globalization;
 using System.IO.Pipelines;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 using Spectre.Console;
 
 // Handles all console output 
@@ -27,16 +28,20 @@ public class ConsoleInteraction
             var prompt = new SelectionPrompt<string>()
             .PageSize(10)
             .AddChoices(new[] {
-            "Add Session", 
-            "View Sessions", 
-            "Delete Session",
-            "Exit"
+                "Start Session",
+                "Add Session",
+                "View Sessions",
+                "Delete Session",
+                "Exit"
             });
 
             var choice = AnsiConsole.Prompt(prompt);
 
             switch (choice)
             {
+                case "Start Session":
+                    StartSessionScreen();
+                    break;
                 case "Add Session":
                     AddSessionScreen();
                     break;
@@ -54,7 +59,50 @@ public class ConsoleInteraction
         }
     }
 
-    private void AddSessionScreen() 
+    private void StartSessionScreen()
+    {
+        DateTime startTime;
+        DateTime endTime;
+        var start = UserInput.YesNoInput("Start a new session?", true);
+
+        if (start)
+        {
+            startTime = DateTime.Now;
+            AnsiConsole.MarkupLine($"[bold green]Session Started[/]");
+
+            bool finished = false;
+            do
+            {
+                finished = UserInput.YesNoInput("End current session?", false);
+            } while (!finished);
+
+            endTime = DateTime.Now;
+            AnsiConsole.MarkupLine($"[bold red]Session Ended[/]");
+
+            AnsiConsole.Markup($"Start Time: [bold yellow]{startTime}[/] ");
+            AnsiConsole.Markup($"End Time: [bold yellow]{endTime}[/] ");
+            AnsiConsole.MarkupLine($"Duration: [bold yellow]{endTime-startTime}[/]");
+            
+            var save = UserInput.YesNoInput("Would you like to save this session?", true);
+
+            if (save)
+            {
+                bool result = db.AddSession(startTime.ToString("HH:mm d/MM/yyyy"), endTime.ToString("HH:mm d/MM/yyyy"));
+                if (result)
+                {
+                    AnsiConsole.MarkupLine("[bold green]Success![/] Session saved.");
+                }
+                else 
+                {
+                    AnsiConsole.MarkupLine("[bold red]ERROR[/] Session could not be saved");
+                }
+            }
+
+            Console.Read();
+            
+        }
+    }
+    private void AddSessionScreen()
     {
         AnsiConsole.MarkupLine("[bold]Date and time entries must be in format [yellow]'00:00 01/01/2000'[/][/]");
 
@@ -63,7 +111,7 @@ public class ConsoleInteraction
         string startDate = "";
         string endDate = "";
 
-        while(!validDates)
+        while (!validDates)
         {
             startDate = UserInput.DateInput("Enter the time and date of when the session started");
             endDate = UserInput.DateInput("Enter the time and date of when the session finished");
@@ -89,7 +137,7 @@ public class ConsoleInteraction
         Console.Read();
     }
 
-    private void DeleteSessionScreen() 
+    private void DeleteSessionScreen()
     {
         // Get id user wants to delete
         // run delete crud operation
@@ -116,7 +164,8 @@ public class ConsoleInteraction
         table.AddColumn("[bold]Start[/]");
         table.AddColumn("[bold]End[/]");
         table.AddColumn("[bold]Duration[/]");
-        table.Title = new TableTitle("[bold]List of all coding sessions[/]");
+        //table.Title = new TableTitle("[bold]List of all coding sessions[/]")
+        ;
 
         List<CodingSession> sessions = db.GetAllSessions();
 

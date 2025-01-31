@@ -20,4 +20,15 @@ public static class UserInput
 
         return date;
     }
+
+    public static bool YesNoInput(string message, bool promptDefault)
+    {
+        var value = AnsiConsole.Prompt(
+            new TextPrompt<bool>(message)
+            .AddChoice(true)
+            .AddChoice(false)
+            .DefaultValue(promptDefault)
+            .WithConverter(choice => choice ? "y" : "n"));
+        return value;
+    }
 }
