@@ -5,18 +5,18 @@ public static class UserInput
 {
     public static string DateInput(string message)
     {
-        string regexPattern = @"^\d{2}:\d{2}\s\d{2}/\d{2}/\d{4}$";
 
         string date = "";
         bool validDate = false;
-        while (!validDate)
+
+        do
         {
             date = AnsiConsole.Ask<string>(message);
-            validDate = Regex.IsMatch(date,regexPattern);
+            validDate = Validation.DateIsFormatted(date);
             if (!validDate) {
-                AnsiConsole.MarkupLine("[bold red]Answer not in valid format try again.[/]");
+                AnsiConsole.MarkupLine("[bold red]ERROR[/] Answer not in valid format.[bold yellow] Try again.[/]");
             }
-        }
+        } while(!validDate);
 
         return date;
     }

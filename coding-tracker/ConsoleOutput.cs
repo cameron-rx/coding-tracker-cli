@@ -59,35 +59,31 @@ public class ConsoleInteraction
         AnsiConsole.MarkupLine("[bold]Date and time entries must be in format [yellow]'00:00 01/01/2000'[/][/]");
 
 
-        string startDate = UserInput.DateInput("Enter the time and date of when the session started");
-        string endDate = UserInput.DateInput("Enter the time and date of when the session finished");
+        bool validDates = false;
+        string startDate = "";
+        string endDate = "";
 
-
-        /*
-            TODO: Abstract away into method
-        */
-
-        DateTime startDateTime = DateTime.ParseExact(startDate,"HH:mm d/MM/yyyy", new CultureInfo("en-US"));
-        DateTime endDateTime = DateTime.ParseExact(endDate,"HH:mm d/MM/yyyy", new CultureInfo("en-US"));
-        bool validDates = DateTime.Compare(startDateTime, endDateTime) < 0 ? true : false;
-
-        if (validDates)
+        while(!validDates)
         {
-
-            bool dbStatus = this.db.AddSession(startDate, endDate);
-
-            if (dbStatus)
+            startDate = UserInput.DateInput("Enter the time and date of when the session started");
+            endDate = UserInput.DateInput("Enter the time and date of when the session finished");
+            validDates = Validation.ValidDates(startDate, endDate);
+            if (!validDates)
             {
-                AnsiConsole.MarkupLine("[bold green]Success![/] Session added to database.");
+                AnsiConsole.MarkupLine("[bold red]ERROR[/] Start date/time does not come before end date/time. [bold yellow]Try again.[/]");
             }
-            else
-            {
-                AnsiConsole.MarkupLine("[bold red]Fail![/] Error adding session to database.");
-            }
+        }
+
+
+        bool dbStatus = this.db.AddSession(startDate, endDate);
+
+        if (dbStatus)
+        {
+            AnsiConsole.MarkupLine("[bold green]Success![/] Session added to database.");
         }
         else
         {
-            AnsiConsole.MarkupLine("[bold red]ERROR[/] Start date/time does not come before end date/time");
+            AnsiConsole.MarkupLine("[bold red]Fail![/] Error adding session to database.");
         }
 
         Console.Read();
