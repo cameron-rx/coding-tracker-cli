@@ -96,7 +96,7 @@ public class ConsoleInteraction
         }
         else
         {
-            AnsiConsole.MarkupLine("\n[bold red]ERROR[/] Start date/time does not come before end date/time");
+            AnsiConsole.MarkupLine("\nt[bold red]ERROR[/] Start date/time does not come before end date/time");
         }
 
         Console.Read();
@@ -109,6 +109,23 @@ public class ConsoleInteraction
 
     private void ViewSessionsScreen()
     {
+        AnsiConsole.Clear();
+        // Id start end duration
+        var table = new Table();
+        table.AddColumn("Id");
+        table.AddColumn("Start");
+        table.AddColumn("End");
+        table.AddColumn("Duration");
+        table.Title = new TableTitle("[bold]List of all coding sessions[/]");
 
+        List<CodingSession> sessions = db.GetAllSessions();
+
+        foreach (CodingSession session in sessions)
+        {
+            table.AddRow(session.Id.ToString(), session.StartDate.ToString(), session.EndDate.ToString(), session.CalculateDuration().ToString());
+        }
+
+        AnsiConsole.Write(table);
+        Console.Read();
     }
 }
