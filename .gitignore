@@ -1,7 +1,7 @@
-coding-tracker/bin/
-coding-tracker/obj/
+src/bin/
+src/obj/
 .vscode/
 coding-tracker.sln
-coding-tracker/Sessions.db
-coding-tracker/App.config
+src/Sessions.db
+src/App.config
 
